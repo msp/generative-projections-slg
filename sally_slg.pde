@@ -1,19 +1,23 @@
 import processing.sound.*;
 
 // timeline(s)
-// make sure this one has the highest maximum frame value!
-int[] timeline1 = { 1, 200, 400, 600, 680, 760 }; 
+int[] timeline1 = { 1, 200, 400, 600, 680, 860, 900, 910, 920, 925, 1000, 1100, 1200 }; 
 int event1 = 0;
 
-int[] timeline2 = {    100, 300, 500 };
+int[] timeline2 = {    100, 300, 500, 510, 520, 530, 540, 600 };
 int event2 = 0;
 
-int[] timeline3 = {    275, 375, 575 };
+int[] timeline3 = {    275, 375, 575, 700, 800, 810, 850, 880, 881, 882, 883, 887, 888 };
 int event3 = 0;
 
+// probability
+boolean enableProbability = true;
+int chance = 100;
+int threshold = 10; // bigger number means a/v is LESS likely to trigger
+
 // dimensions
-int screenWidth = 900;
-int screenHeight = 300;
+int screenWidth = 1350;
+int screenHeight = screenWidth/3;
 
 // misc
 int localFrameRate1 = 1;
@@ -47,7 +51,7 @@ void settings() {
 }
 
 void setup() {
-  //frameRate(30);
+  //frameRate(60);
      
   for (int j = 0; j < total_images; j++) {
     images1[j] = loadImage( "1-"+j+".jpg");
@@ -71,16 +75,17 @@ void setup() {
 }
 
 void draw() {
-  print(localFrameRate1+ " : "+event1+ " ");
-  print(localFrameRate2+ " : "+event2+ " ");
-  print(localFrameRate3+ " : "+event3+ " ");
+  print(localFrameRate1+ " : "+event1+ " | ");
+  print(localFrameRate2+ " : "+event2+ " | ");
+  print(localFrameRate3+ " : "+event3+ " | ");
+  println("");
   
   if (localFrameRate1 == timeline1[event1]) {        
     displayImage(1);
     if (event1 < timeline1.length - 1) {
       event1++;
     } else {
-      localFrameRate1 = 1;
+      localFrameRate1 = 0;
       event1 = 0;
     }        
   }
@@ -127,30 +132,46 @@ void mousePressed() {
 
 void displayImage(int timeline) {
   //println("["+timeline+"]"+localFrameRate+": fire frame");
-  //triOsc.freq(random(300,500));
-  //triOsc.play();
-  //env.play(triOsc, attackTime, sustainTime, sustainLevel, releaseTime);
       
   r=int(random(total_images));
   
   
+  if (enableProbability) {
+    chance = (int) random(1, 100);
+  } else {
+    chance = 100;
+  }
+  
   int xpos = 0;
   int ypos = 0;
   
-  if (timeline == 1) {
-    xpos = 0;
-    println("displaying random image1: "+r);
-    image(images1[r],xpos,ypos);
-    file1.play();
-  } else if (timeline == 2) {
-    xpos = 300;
-    println("displaying random image2: "+r);
-    image(images2[r],xpos,ypos);
-    file2.play();
+  if (timeline == 1) {        
+    if (chance > threshold) {
+      xpos = 0;
+      println("displaying random image1: "+r);
+      image(images1[r],xpos,ypos);
+      file1.rate((int)random(0.5, 20));
+      file1.play();
+    }
+  } else if (timeline == 2) {    
+    if (chance > threshold) {
+      xpos = screenWidth/3;
+      println("displaying random image2: "+r);
+      image(images2[r],xpos,ypos);
+      //file2.play();
+      
+      triOsc.freq(random(50,10000));
+      triOsc.play();
+      env.play(triOsc, attackTime, sustainTime, sustainLevel, releaseTime);
+      
+    }
   } else if (timeline == 3) {
-    xpos = 600;
-    println("displaying random image3: "+r);
-    image(images3[r],xpos,ypos);
-    file3.play();
+    if (chance > threshold) {
+      xpos = (screenWidth/3) * 2;
+      println("displaying random image3: "+r);
+      image(images3[r],xpos,ypos);
+      file3.play();
+      file3.rate((int)random(0.5, 20));
+    }
   }  
 }
