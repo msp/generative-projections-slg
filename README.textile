@@ -1,0 +1,36 @@
+h1. Generative Projections for SLG
+
+
+Patch for this exhibition: "http://www.southlondongallery.org/page/sally-golding":http://www.southlondongallery.org/page/sally-golding
+
+* Display image frames & play sounds from the data directory for each of 3 projectors in phasing loops.
+* Edit each of the timeline arrays to determine when to fire events.
+* Change the probability to determine the likelihood of each timeline event firing.
+
+Will likely use Syphon to plug through VDMX for the final presentation!
+
+h2. Configure
+
+
+Run in "Processing":http://processing.org (3.0).
+
+bc. # Data dir structure
+####################
++ data
+- - projector-1
+- - - images
+- - - - foo.jpg
+- - - - bar.jpg
+- - - sounds
+- - - - clip.wav
+- - - - sound.wav
+- + projector-2
+- + projector-3
+
+
+h2. Thanks
+
+- "Processing":http://processing.org
+- "Syphon":http://syphon.v002.info
+- "VDMX":http://vdmx.vidvox.net
+- "South London Gallery":http://www.southlondongallery.org
