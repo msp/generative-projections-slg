@@ -1,4 +1,5 @@
 import processing.sound.*;
+import java.util.Date;
 
 // timeline(s)
 int[] timeline1 = { 1, 200, 400, 600, 680, 860, 900, 910, 920, 925, 1000, 1100, 1200 }; 
@@ -26,10 +27,23 @@ int localFrameRate3 = 1;
 int keepImageForFrames = 60;
 int keepImageForFramesCounter = 0;
 int total_projectors = 3;
-int total_images = 6;
-PImage[] images1 = new PImage[total_images];
-PImage[] images2 = new PImage[total_images];
-PImage[] images3 = new PImage[total_images];
+
+ArrayList<PImage> images1 = new ArrayList<PImage>();
+ArrayList<PImage> images2 = new ArrayList<PImage>();
+ArrayList<PImage> images3 = new ArrayList<PImage>();
+
+ArrayList<SoundFile> sounds1 = new ArrayList<SoundFile>();
+ArrayList<SoundFile> sounds2 = new ArrayList<SoundFile>();
+ArrayList<SoundFile> sounds3 = new ArrayList<SoundFile>();
+
+PImage p1Image;
+PImage p2Image;
+PImage p3Image;
+
+SoundFile p1Sound;
+SoundFile p2Sound;
+SoundFile p3Sound;
+
 PImage img = new PImage();
 int r;
 
@@ -40,11 +54,6 @@ float attackTime = 0.001;
 float sustainTime = 0.004;
 float sustainLevel = 0.3;
 float releaseTime = 0.1;
-
-SoundFile file1;
-SoundFile file2;
-SoundFile file3;
- 
  
 void settings() {
   size(screenWidth, screenHeight);
@@ -52,22 +61,15 @@ void settings() {
 
 void setup() {
   //frameRate(60);
-     
-  for (int j = 0; j < total_images; j++) {
-    images1[j] = loadImage( "1-"+j+".jpg");
-    images1[j].resize(screenHeight, screenHeight);
-
-    images2[j] = loadImage( "2-"+j+".jpg");
-    images2[j].resize(screenHeight, screenHeight);
-    
-    images3[j] = loadImage( "3-"+j+".jpg");
-    images3[j].resize(screenHeight, screenHeight);   
-  }
+        
+  FileUtils.loadImagesInto(images1, sketchPath()+"/data/projector-1/images", this, screenHeight);
+  FileUtils.loadImagesInto(images2, sketchPath()+"/data/projector-2/images", this, screenHeight);
+  FileUtils.loadImagesInto(images3, sketchPath()+"/data/projector-3/images", this, screenHeight);
   
-  file1 = new SoundFile(this, "1.wav");
-  file2 = new SoundFile(this, "2.wav");
-  file3 = new SoundFile(this, "3.wav");
-
+  FileUtils.loadSoundsInto(sounds1, sketchPath()+"/data/projector-1/sounds", this);
+  FileUtils.loadSoundsInto(sounds2, sketchPath()+"/data/projector-2/sounds", this);
+  FileUtils.loadSoundsInto(sounds3, sketchPath()+"/data/projector-3/sounds", this);
+  
   background(0);
    
   triOsc = new TriOsc(this);
@@ -114,7 +116,7 @@ void draw() {
       localFrameRate2 != timeline2[event2] &&
       localFrameRate3 != timeline3[event3]) {
    if (keepImageForFramesCounter < keepImageForFrames) {
-     //background(0);
+     // keep visible
    } else {
      keepImageForFramesCounter = 0;
      background(0);
@@ -127,15 +129,9 @@ void draw() {
   localFrameRate3++;
 }
 
-void mousePressed() {       
-}
-
-void displayImage(int timeline) {
-  //println("["+timeline+"]"+localFrameRate+": fire frame");
+void displayImage(int projector) {
+  //println("["+projector+"]"+localFrameRate+": fire frame");
       
-  r=int(random(total_images));
-  
-  
   if (enableProbability) {
     chance = (int) random(1, 100);
   } else {
@@ -145,19 +141,25 @@ void displayImage(int timeline) {
   int xpos = 0;
   int ypos = 0;
   
-  if (timeline == 1) {        
+  if (projector == 1) {        
     if (chance > threshold) {
       xpos = 0;
-      println("displaying random image1: "+r);
-      image(images1[r],xpos,ypos);
-      file1.rate((int)random(0.5, 20));
-      file1.play();
+      
+      p1Image = images1.get((int)random(images1.size()));
+      p1Sound = sounds1.get((int)random(sounds1.size()));
+      
+      image(p1Image,xpos,ypos);
+            
+      p1Sound.rate((int)random(0.5, 20));
+      p1Sound.play();
     }
-  } else if (timeline == 2) {    
+  } else if (projector == 2) {    
     if (chance > threshold) {
       xpos = screenWidth/3;
-      println("displaying random image2: "+r);
-      image(images2[r],xpos,ypos);
+
+      p2Image = images2.get((int)random(images2.size()));
+      
+      image(p2Image,xpos,ypos);
       //file2.play();
       
       triOsc.freq(random(50,10000));
@@ -165,13 +167,19 @@ void displayImage(int timeline) {
       env.play(triOsc, attackTime, sustainTime, sustainLevel, releaseTime);
       
     }
-  } else if (timeline == 3) {
+  } else if (projector == 3) {
     if (chance > threshold) {
       xpos = (screenWidth/3) * 2;
-      println("displaying random image3: "+r);
-      image(images3[r],xpos,ypos);
-      file3.play();
-      file3.rate((int)random(0.5, 20));
+
+      p3Image = images3.get((int)random(images3.size()));
+      p3Sound = sounds3.get((int)random(sounds3.size()));
+
+      image(p3Image,xpos,ypos);
+      p3Sound.play();
+      p3Sound.rate((int)random(0.5, 20));
     }
   }  
+}
+
+void mousePressed() {       
 }
