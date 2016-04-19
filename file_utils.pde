@@ -1,7 +1,7 @@
 static class FileUtils {
   
   
-  static void loadImagesInto(ArrayList array, String path, PApplet sketch, int rHeight) {
+  static void loadImagesInto(ArrayList array, String path, PApplet sketch, int rWidth, int rHeight) {
     ArrayList<File> allFiles = FileUtils.listFilesRecursive(path);
     PImage image;
     
@@ -10,7 +10,7 @@ static class FileUtils {
         println("loading: " + f.getAbsolutePath());
         
         image = sketch.loadImage(f.getAbsolutePath());
-        image.resize(rHeight, rHeight);
+        image.resize(rWidth, rHeight);
         array.add(image);
       }
     }  

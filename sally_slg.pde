@@ -1,30 +1,36 @@
 import processing.sound.*;
 import java.util.Date;
 
+//// SALLY CAN EDIT ///////////////////////////
+
 // timeline(s)
-int[] timeline1 = { 1, 200, 400, 600, 680, 860, 900, 910, 920, 925, 1000, 1100, 1200 }; 
+int[] timeline1 = { 1, 200, 400, 600, 680, 860, 900, 910, 920, 925, 1000, 1100, 1200 };
 int event1 = 0;
 
-int[] timeline2 = {    100, 300, 500, 510, 520, 530, 540, 600 };
+int[] timeline2 = { 1, 100, 300, 500, 510, 520, 530, 540, 600 };
 int event2 = 0;
 
-int[] timeline3 = {    275, 375, 575, 700, 800, 810, 850, 880, 881, 882, 883, 887, 888 };
+int[] timeline3 = { 1, 275, 375, 575, 700, 800, 810, 850, 880, 881, 882, 883, 887, 888 };
 int event3 = 0;
 
 // probability
 boolean enableProbability = true;
 int chance = 100;
-int threshold = 10; // bigger number means a/v is LESS likely to trigger
+int threshold = 25; // bigger number means a/v is LESS likely to trigger
 
-// dimensions
-int screenWidth = 1350;
-int screenHeight = screenWidth/3;
+// Image visible for
+int keepImageForFrames = 200;
+
+//// END OF SALLY CAN EDIT ///////////////////
+
+// dimensions 768/1024 = 0.75
+int screenWidth = 450 * 3;
+int screenHeight = 338;
 
 // misc
 int localFrameRate1 = 1;
 int localFrameRate2 = 1;
 int localFrameRate3 = 1;
-int keepImageForFrames = 60;
 int keepImageForFramesCounter = 0;
 int total_projectors = 3;
 
@@ -62,9 +68,9 @@ void settings() {
 void setup() {
   //frameRate(60);
         
-  FileUtils.loadImagesInto(images1, sketchPath()+"/data/projector-1/images", this, screenHeight);
-  FileUtils.loadImagesInto(images2, sketchPath()+"/data/projector-2/images", this, screenHeight);
-  FileUtils.loadImagesInto(images3, sketchPath()+"/data/projector-3/images", this, screenHeight);
+  FileUtils.loadImagesInto(images1, sketchPath()+"/data/projector-1/images", this, screenWidth/3, screenHeight);
+  FileUtils.loadImagesInto(images2, sketchPath()+"/data/projector-2/images", this, screenWidth/3, screenHeight);
+  FileUtils.loadImagesInto(images3, sketchPath()+"/data/projector-3/images", this, screenWidth/3, screenHeight);
   
   FileUtils.loadSoundsInto(sounds1, sketchPath()+"/data/projector-1/sounds", this);
   FileUtils.loadSoundsInto(sounds2, sketchPath()+"/data/projector-2/sounds", this);
@@ -148,6 +154,7 @@ void displayImage(int projector) {
       p1Image = images1.get((int)random(images1.size()));
       p1Sound = sounds1.get((int)random(sounds1.size()));
       
+      // tint(random(255), random(255), random(255), random(255));
       image(p1Image,xpos,ypos);
             
       p1Sound.rate((int)random(0.5, 20));
