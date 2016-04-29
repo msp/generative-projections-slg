@@ -103,7 +103,7 @@ void draw() {
     if (event2 < timeline2.length - 1) {
       event2++;
     } else {
-      localFrameRate2 = 1;
+      localFrameRate2 = 0;
       event2 = 0;
     }     
   } 
@@ -113,7 +113,7 @@ void draw() {
     if (event3 < timeline3.length - 1) {
       event3++;
     } else {
-      localFrameRate3 = 1;
+      localFrameRate3 = 0;
       event3 = 0;
     }    
   } 
