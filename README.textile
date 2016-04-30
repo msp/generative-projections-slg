@@ -11,8 +11,9 @@ Will likely use Syphon to plug through VDMX for the final presentation!
 
 h2. Configure
 
-
 Run in "Processing":http://processing.org (3.0).
+
+It currently requires the "Processing Sound":https://processing.org/reference/libraries/sound/ library. "Install":https://github.com/processing/processing/wiki/How-to-Install-a-Contributed-Library with Sketch > Import Library > Add Library.
 
 bc. # Data dir structure
 ####################
