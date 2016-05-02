@@ -7,7 +7,7 @@ static class FileUtils {
 
     for (File f: allFiles) {
       if (!f.isDirectory() && !f.getName().startsWith(".")) {
-        println("loading: " + f.getAbsolutePath());
+        println("loading image: " + f.getAbsolutePath());
 
         image = sketch.loadImage(f.getAbsolutePath());
         image.resize(rWidth, rHeight);
@@ -20,8 +20,8 @@ static class FileUtils {
     ArrayList<File> allFiles = FileUtils.listFilesRecursive(path);
 
     for (File f: allFiles) {
-      if (!f.isDirectory()) {
-        println("loading: " + f.getAbsolutePath());
+      if (!f.isDirectory() && !f.getName().startsWith(".")) {
+        println("loading sound: " + f.getAbsolutePath());
         array.add(new SoundFile(sketch, f.getAbsolutePath()));
       }
     }
