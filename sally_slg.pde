@@ -1,9 +1,11 @@
 import processing.sound.*;
 import java.util.Date;
 
-// dimensions 768/1024 = 0.75
-int screenWidth = 450 * 3;
-int screenHeight = 338;
+// ratio 768/1024 = 0.75
+float scaler = 2; // needs to be set to 1 when using 1025x768 projectors! Maybe, 1.5 or 2 when testing without external projectors
+int screenWidth = (int)(1024/scaler) * 3;
+int screenHeight = (int)(768/scaler);
+int targetDisplay = 2; // it's likely that 1 is your main screen and 2 will be the triplehead
 
 int keepImageForFramesCounter = 0;
 
@@ -36,7 +38,8 @@ float releaseTime = 0.1;
 
 // PROCESSING
 void settings() {
-  size(screenWidth, screenHeight);
+  //size(screenWidth, screenHeight);
+  fullScreen(targetDisplay); // needs to be set to the correct display!
 }
 
 void setup() {
@@ -59,7 +62,7 @@ void setup() {
         int xpos = 0;
         int ypos = 0;
 
-        if (chance > Config.threshold) {
+        if (chance > (100 - Config.likelihood)) {
           p1Image = images1.get((int)random(images1.size()));
           p1Sound = sounds1.get((int)random(sounds1.size()));
 
@@ -78,7 +81,7 @@ void setup() {
         int xpos = 0;
         int ypos = 0;
 
-        if (chance > Config.threshold) {
+        if (chance > (100 - Config.likelihood)) {
           xpos = screenWidth/3;
           p2Image = images2.get((int)random(images2.size()));
 
@@ -98,7 +101,7 @@ void setup() {
         int xpos = 0;
         int ypos = 0;
 
-        if (chance > Config.threshold) {
+        if (chance > (100 - Config.likelihood)) {
           xpos = (screenWidth/3) * 2;
 
           p3Image = images3.get((int)random(images3.size()));

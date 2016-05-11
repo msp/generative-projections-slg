@@ -8,10 +8,10 @@ static class Config {
 
   // probability
   static boolean enableProbability = true;
-  static int threshold = 25; // bigger number means a/v is LESS likely to trigger
+  static int likelihood = 75; // how likely is the event to fire? e.g. 75 is 75% of the time
 
   // Image visible for
-  static int keepImageForFrames = 200;
+  static int keepImageForFrames = 100;
 
   //// END OF SALLY CAN EDIT ///////////////////
 }
