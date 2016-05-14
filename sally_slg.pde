@@ -59,7 +59,7 @@ void setup() {
           // tint(random(255), random(255), random(255), random(255));
           image(p1Image,xpos,ypos);
 
-          p1Sound.rate((int)random(0.5, 20));
+          //p1Sound.rate((int)random(0.5, 20));
           p1Sound.play();
         }
       }
@@ -74,10 +74,12 @@ void setup() {
         if (chance > (100 - Config.likelihood)) {
           xpos = screenWidth/3;
           p2Image = images2.get((int)random(images2.size()));
+          p2Sound = sounds2.get((int)random(sounds2.size()));
 
           image(p2Image,xpos,ypos);
 
-          //file2.play();
+          //p2Sound.rate((int)random(0.5, 20));
+          p2Sound.play();
         }
       }
   });
@@ -96,8 +98,8 @@ void setup() {
 
           image(p3Image,xpos,ypos);
 
+          //p3Sound.rate((int)random(0.5, 20));
           p3Sound.play();
-          p3Sound.rate((int)random(0.5, 20));
         }
       }
   });
