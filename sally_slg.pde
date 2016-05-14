@@ -55,8 +55,8 @@ void setup() {
 
         if (chance > (100 - Config.likelihood)) {
           println("!!!! Projector 1 fire");
-          p1Image = images1.get((int)random(images1.size()-1));
-          p1Sound = sounds1.get((int)random(sounds1.size()-1));
+          p1Image = images1.get((int)random(images1.size()));
+          p1Sound = sounds1.get((int)random(sounds1.size()));
 
           // tint(random(255), random(255), random(255), random(255));
           image(p1Image,xpos,ypos);
@@ -76,8 +76,8 @@ void setup() {
         if (chance > (100 - Config.likelihood)) {
           println("!!!! Projector 2 fire");
           xpos = screenWidth/3;
-          p2Image = images2.get((int)random(images2.size()-1));
-          p2Sound = sounds2.get((int)random(sounds2.size()-1));
+          p2Image = images2.get((int)random(images2.size()));
+          p2Sound = sounds2.get((int)random(sounds2.size()));
 
           image(p2Image,xpos,ypos);
 
@@ -97,8 +97,8 @@ void setup() {
           println("!!!! Projector 3 fire");
           xpos = (screenWidth/3) * 2;
 
-          p3Image = images3.get((int)random(images3.size()-1));
-          p3Sound = sounds3.get((int)random(sounds3.size()-1));
+          p3Image = images3.get((int)random(images3.size()));
+          p3Sound = sounds3.get((int)random(sounds3.size()));
 
           image(p3Image,xpos,ypos);
 
