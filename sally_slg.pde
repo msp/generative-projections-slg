@@ -29,13 +29,6 @@ Timeline projector1;
 Timeline projector2;
 Timeline projector3;
 
-TriOsc triOsc;
-Env env;
-float attackTime = 0.001;
-float sustainTime = 0.004;
-float sustainLevel = 0.3;
-float releaseTime = 0.1;
-
 // PROCESSING
 void settings() {
   //size(screenWidth, screenHeight);
@@ -45,9 +38,6 @@ void settings() {
 void setup() {
   //frameRate(60);
   background(0);
-
-  triOsc = new TriOsc(this);
-  env  = new Env(this);
 
   FileUtils.loadImagesInto(images1, sketchPath()+"/data/projector-1/images", this, screenWidth/3, screenHeight);
   FileUtils.loadImagesInto(images2, sketchPath()+"/data/projector-2/images", this, screenWidth/3, screenHeight);
@@ -88,9 +78,6 @@ void setup() {
           image(p2Image,xpos,ypos);
 
           //file2.play();
-          triOsc.freq(random(50,10000));
-          triOsc.play();
-          env.play(triOsc, attackTime, sustainTime, sustainLevel, releaseTime);
         }
       }
   });
