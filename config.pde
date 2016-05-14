@@ -13,5 +13,12 @@ static class Config {
   // Image visible for
   static int keepImageForFrames = 100;
 
+  // Bluring
+  // 3600 frames per minute at normal framerate 60fps
+  static int blurFromFrame = 1800; // 30 seconds START
+  // When bluring runs at approx 7fps e.g. 30 seconds would be 7 * 30 = 210 frames
+  static int blurUntilFrame = 2100; // 60 seconds STOP
+
+
   //// END OF SALLY CAN EDIT ///////////////////
 }

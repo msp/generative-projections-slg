@@ -8,6 +8,7 @@ int screenHeight = (int)(768/scaler);
 int targetDisplay = 2; // it's likely that 1 is your main screen and 2 will be the triplehead
 
 int keepImageForFramesCounter = 0;
+int blurCounter = 0;
 
 ArrayList<PImage> images1 = new ArrayList<PImage>();
 ArrayList<PImage> images2 = new ArrayList<PImage>();
@@ -45,7 +46,7 @@ void setup() {
   FileUtils.loadSoundsInto(sounds1, sketchPath()+"/data/projector-1/sounds", this);
   FileUtils.loadSoundsInto(sounds2, sketchPath()+"/data/projector-2/sounds", this);
   FileUtils.loadSoundsInto(sounds3, sketchPath()+"/data/projector-3/sounds", this);
-
+  
   projector1 = new Timeline(Config.timeline1, new TimelineRenderer() {
     public void action() {
         int chance = getChance();
@@ -109,7 +110,8 @@ void setup() {
 }
 
 void draw() {
-  print(projector1); print(projector2); print(projector3);
+  print((int)frameRate+"\t"); print(projector1); print(projector2); print(projector3);
+  print("\t\t"+blurCounter+"\t >"+Config.blurFromFrame+"<"+Config.blurUntilFrame);
   println("");
 
   projector1.draw();
@@ -117,6 +119,16 @@ void draw() {
   projector3.draw();
 
   checkWhetherToHideImages();
+  
+  if (blurCounter >= Config.blurUntilFrame) {
+    blurCounter = 0;
+  } else if (blurCounter >= Config.blurFromFrame) {
+    println("############### BLURING! ");
+    filter(BLUR, 2);
+    blurCounter++;
+  } else {
+    blurCounter++;
+  }
 }
 
 // UTILS
