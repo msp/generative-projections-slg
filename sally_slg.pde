@@ -1,10 +1,13 @@
-import processing.sound.*;
-import java.util.Date;
+import beads.*;
+import org.jaudiolibs.beads.AudioServerIO;
 
-// ratio 768/1024 = 0.75
+// ratio 600/800 = 0.75
+int projectorWidth = 800;
+int projectorHeight = 600;
+boolean fullScreen = true;
 float scaler = 1; // needs to be set to 1 when using 800x600 projectors! Maybe, 1.5 or 2 when testing without external projectors
-int screenWidth = (int)(800/scaler) * 3;
-int screenHeight = (int)(600/scaler);
+int screenWidth = (int)(projectorWidth/scaler) * 3;
+int screenHeight = (int)(projectorHeight/scaler);
 int targetDisplay = 1; // triplehead is the only screen
 
 int keepImageForFramesCounter = 0;
@@ -14,38 +17,49 @@ ArrayList<PImage> images1 = new ArrayList<PImage>();
 ArrayList<PImage> images2 = new ArrayList<PImage>();
 ArrayList<PImage> images3 = new ArrayList<PImage>();
 
-ArrayList<SoundFile> sounds1 = new ArrayList<SoundFile>();
-ArrayList<SoundFile> sounds2 = new ArrayList<SoundFile>();
-ArrayList<SoundFile> sounds3 = new ArrayList<SoundFile>();
-
 PImage p1Image;
 PImage p2Image;
 PImage p3Image;
 
-SoundFile p1Sound;
-SoundFile p2Sound;
-SoundFile p3Sound;
+SamplePlayer p1Player;
+SamplePlayer p2Player;
+SamplePlayer p3Player;
 
 Timeline projector1;
 Timeline projector2;
 Timeline projector3;
 
+AudioContext audioContext;
+IOAudioFormat audioFormat;
+float sampleRate = 44100;
+int buffer = 512;
+int bitDepth = 16;
+int inputs = 2;
+int outputs = 4;
+
+boolean debugTimeline = true;
+
 // PROCESSING
 void settings() {
-  //size(screenWidth, screenHeight);
-  fullScreen(targetDisplay); // needs to be set to the correct display!
+  if (fullScreen) {
+    fullScreen(targetDisplay);
+  } else {
+    size(screenWidth, screenHeight);
+  }
 }
 
 void setup() {
-  //frameRate(60);
   background(0);
+
+  audioFormat = new IOAudioFormat(sampleRate, bitDepth, inputs, outputs);
+  audioContext = new AudioContext(new AudioServerIO.Jack(), buffer, audioFormat);
 
   FileUtils.loadImagesInto(images1, sketchPath()+"/data/projector-1/images", this, screenWidth/3, screenHeight);
   FileUtils.loadImagesInto(images2, sketchPath()+"/data/projector-2/images", this, screenWidth/3, screenHeight);
   FileUtils.loadImagesInto(images3, sketchPath()+"/data/projector-3/images", this, screenWidth/3, screenHeight);
-  FileUtils.loadSoundsInto(sounds1, sketchPath()+"/data/projector-1/sounds", this);
-  FileUtils.loadSoundsInto(sounds2, sketchPath()+"/data/projector-2/sounds", this);
-  FileUtils.loadSoundsInto(sounds3, sketchPath()+"/data/projector-3/sounds", this);
+  SampleManager.group("projector-1", FileUtils.loadSounds(sketchPath()+"/data/projector-1/sounds"));
+  SampleManager.group("projector-2", FileUtils.loadSounds(sketchPath()+"/data/projector-2/sounds"));
+  SampleManager.group("projector-3", FileUtils.loadSounds(sketchPath()+"/data/projector-3/sounds"));
   
   projector1 = new Timeline(Config.timeline1, new TimelineRenderer() {
     public void action() {
@@ -54,15 +68,17 @@ void setup() {
         int ypos = 0;
 
         if (chance > (100 - Config.likelihood)) {
-          println("!!!! Projector 1 fire");
+          if (debugTimeline) println("!!!! Projector 1 fire");
           p1Image = images1.get((int)random(images1.size()));
-          p1Sound = sounds1.get((int)random(sounds1.size()));
+          p1Player = new SamplePlayer(audioContext, SampleManager.randomFromGroup("projector-1"));
 
           // tint(random(255), random(255), random(255), random(255));
           image(p1Image,xpos,ypos);
 
-          //p1Sound.rate((int)random(0.5, 20));
-          p1Sound.play();
+          Gain g = new Gain(audioContext, 2, 0.2);
+          g.addInput(p1Player);
+          audioContext.out.addInput(0, g, 0); // OUT 1
+          audioContext.start();
         }
       }
   });
@@ -74,15 +90,17 @@ void setup() {
         int ypos = 0;
 
         if (chance > (100 - Config.likelihood)) {
-          println("!!!! Projector 2 fire");
+          if (debugTimeline) println("!!!! Projector 2 fire");
           xpos = screenWidth/3;
           p2Image = images2.get((int)random(images2.size()));
-          p2Sound = sounds2.get((int)random(sounds2.size()));
+          p2Player = new SamplePlayer(audioContext, SampleManager.randomFromGroup("projector-2"));
 
           image(p2Image,xpos,ypos);
 
-          //p2Sound.rate((int)random(0.5, 20));
-          p2Sound.play();
+          Gain g = new Gain(audioContext, 2, 0.2);
+          g.addInput(p2Player);
+          audioContext.out.addInput(1, g, 0); // OUT 2
+          audioContext.start();
         }
       }
   });
@@ -94,25 +112,29 @@ void setup() {
         int ypos = 0;
 
         if (chance > (100 - Config.likelihood)) {
-          println("!!!! Projector 3 fire");
+          if (debugTimeline) println("!!!! Projector 3 fire");
           xpos = (screenWidth/3) * 2;
 
           p3Image = images3.get((int)random(images3.size()));
-          p3Sound = sounds3.get((int)random(sounds3.size()));
+          p3Player = new SamplePlayer(audioContext, SampleManager.randomFromGroup("projector-3"));
 
           image(p3Image,xpos,ypos);
 
-          //p3Sound.rate((int)random(0.5, 20));
-          p3Sound.play();
+          Gain g = new Gain(audioContext, 2, 0.2);
+          g.addInput(p3Player);
+          audioContext.out.addInput(2, g, 0); // OUT 3
+          audioContext.start();
         }
       }
   });
 }
 
 void draw() {
-  print((int)frameRate+"\t"); print(projector1); print(projector2); print(projector3);
-  print("\t\t"+blurCounter+"\t >"+Config.blurFromFrame+"<"+Config.blurUntilFrame);
-  println("");
+  if (debugTimeline) {
+    print((int)frameRate+"\t"); print(projector1); print(projector2); print(projector3);
+    print("\t\t"+blurCounter+"\t >"+Config.blurFromFrame+"<"+Config.blurUntilFrame);
+    println("");
+  }
 
   projector1.draw();
   projector2.draw();
@@ -123,7 +145,7 @@ void draw() {
   if (blurCounter >= Config.blurUntilFrame) {
     blurCounter = 0;
   } else if (blurCounter >= Config.blurFromFrame) {
-    println("############### BLURING! ");
+    if (debugTimeline) println("############### BLURING! ");
     filter(BLUR, 2);
     blurCounter++;
   } else {

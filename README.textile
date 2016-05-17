@@ -7,13 +7,14 @@ Patch for this exhibition: "http://www.southlondongallery.org/page/sally-golding
 * Edit each of the timeline arrays to determine when to fire events.
 * Change the probability to determine the likelihood of each timeline event firing.
 
-Will likely use Syphon to plug through VDMX for the final presentation!
 
 h2. Configure
 
 Run in "Processing":http://processing.org (3.0).
 
-It currently requires the "Processing Sound":https://processing.org/reference/libraries/sound/ library. "Install":https://github.com/processing/processing/wiki/How-to-Install-a-Contributed-Library with Sketch > Import Library > Add Library.
+It currently requires the "Beads Processing":http://www.beadsproject.net library. "Install":https://github.com/processing/processing/wiki/How-to-Install-a-Contributed-Library with Sketch > Import Library > Add Library.
+
+Beads depends on an install of "Jack":http://jackaudio.org for multi channel sound. See this "forum thread":https://forum.processing.org/two/discussion/16611/multichannel-audio#latest for more info.
 
 bc. # Data dir structure
 ####################
@@ -32,6 +33,5 @@ bc. # Data dir structure
 h2. Thanks
 
 - "Processing":http://processing.org
-- "Syphon":http://syphon.v002.info
-- "VDMX":http://vdmx.vidvox.net
+- "Beads":http://www.beadsproject.net
 - "South London Gallery":http://www.southlondongallery.org

@@ -1,5 +1,6 @@
-static class FileUtils {
+import beads.*;
 
+static class FileUtils {
 
   static void loadImagesInto(ArrayList array, String path, PApplet sketch, int rWidth, int rHeight) {
     ArrayList<File> allFiles = FileUtils.listFilesRecursive(path);
@@ -16,15 +17,18 @@ static class FileUtils {
     }
   }
 
-  static void loadSoundsInto(ArrayList array, String path, PApplet sketch) {
+  static String[] loadSounds(String path) {
     ArrayList<File> allFiles = FileUtils.listFilesRecursive(path);
+    ArrayList<String> sampleFileNames = new ArrayList<String>();
 
     for (File f: allFiles) {
       if (!f.isDirectory() && !f.getName().startsWith(".")) {
-        println("loading sound: " + f.getAbsolutePath());
-        array.add(new SoundFile(sketch, f.getAbsolutePath()));
+        //println("loading sound: " + f.getAbsolutePath());
+        sampleFileNames.add(f.getAbsolutePath());
       }
     }
+
+    return sampleFileNames.toArray(new String[sampleFileNames.size()]);
   }
 
   // This function returns all the files in a directory as an array of Strings
