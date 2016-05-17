@@ -2,10 +2,10 @@ import processing.sound.*;
 import java.util.Date;
 
 // ratio 768/1024 = 0.75
-float scaler = 2; // needs to be set to 1 when using 1025x768 projectors! Maybe, 1.5 or 2 when testing without external projectors
-int screenWidth = (int)(1024/scaler) * 3;
-int screenHeight = (int)(768/scaler);
-int targetDisplay = 2; // it's likely that 1 is your main screen and 2 will be the triplehead
+float scaler = 1; // needs to be set to 1 when using 800x600 projectors! Maybe, 1.5 or 2 when testing without external projectors
+int screenWidth = (int)(800/scaler) * 3;
+int screenHeight = (int)(600/scaler);
+int targetDisplay = 1; // triplehead is the only screen
 
 int keepImageForFramesCounter = 0;
 int blurCounter = 0;
