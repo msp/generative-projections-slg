@@ -141,16 +141,7 @@ void draw() {
   projector3.draw();
 
   checkWhetherToHideImages();
-  
-  if (blurCounter >= Config.blurUntilFrame) {
-    blurCounter = 0;
-  } else if (blurCounter >= Config.blurFromFrame) {
-    if (debugTimeline) println("############### BLURING! ");
-    filter(BLUR, 2);
-    blurCounter++;
-  } else {
-    blurCounter++;
-  }
+  checkWhetherToBlurImages();
 }
 
 // UTILS
@@ -176,6 +167,18 @@ void checkWhetherToHideImages() {
   }
 
   keepImageForFramesCounter++;
+}
+
+void checkWhetherToBlurImages() {
+    if (blurCounter >= Config.blurUntilFrame) {
+    blurCounter = 0;
+  } else if (blurCounter >= Config.blurFromFrame) {
+    if (debugTimeline) println("############### BLURING! ");
+    filter(BLUR, 2);
+    blurCounter++;
+  } else {
+    blurCounter++;
+  }
 }
 
 // INTERACTIONS
