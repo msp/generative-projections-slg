@@ -1,5 +1,14 @@
 class TimelineRenderer {
+  int xpos;
+  int ypos;
+
+  TimelineRenderer (int _xpos, int _ypos) {
+    xpos = _xpos;
+    ypos = _ypos;
+  }
+
   public void action() { }
+  public void clear() { }
 }
 
 class Timeline {
@@ -7,6 +16,7 @@ class Timeline {
   TimelineRenderer renderer;
   int localFrameCount = 1;
   int eventCount = 0;
+  int keepImageForFramesCount = 0;
 
   Timeline (int[] _events, TimelineRenderer _renderer ) {
     events = _events;
@@ -14,7 +24,7 @@ class Timeline {
   }
 
   void draw() {
-    if (eventFired()) {              
+    if (eventFired()) {
       renderer.action();
 
       if (eventCount < events.length - 1) {
@@ -25,7 +35,10 @@ class Timeline {
       }
     }
 
+    renderer.clear();
+
     localFrameCount++;
+    keepImageForFramesCount++;
   }
 
   Boolean eventFired() {
