@@ -2,16 +2,18 @@ import beads.*;
 import org.jaudiolibs.beads.AudioServerIO;
 
 // ratio 600/800 = 0.75
-int projectorWidth = 800;
-int projectorHeight = 600;
-boolean fullScreen = true;
-float scaler = 1; // needs to be set to 1 when using 800x600 projectors! Maybe, 1.5 or 2 when testing without external projectors
-int screenWidth = (int)(projectorWidth/scaler) * 3;
-int screenHeight = (int)(projectorHeight/scaler);
+boolean fullScreen = false;
+float scaler = 2; // needs to be set to 1 when using 800x600 projectors! Maybe, 1.5 or 2 when testing without external projectors
+int projectorWidth = (int) (800/scaler);
+int projectorHeight = (int) (600/scaler);
+int screenWidth = (int)(projectorWidth) * 3;
+int screenHeight = (int)(projectorHeight);
 int targetDisplay = 1; // triplehead is the only screen
 
 int keepImageForFramesCounter = 0;
 int blurCounter = 0;
+
+boolean debugTripleheadScreens = true;
 
 ArrayList<PImage> images1 = new ArrayList<PImage>();
 ArrayList<PImage> images2 = new ArrayList<PImage>();
@@ -60,7 +62,7 @@ void setup() {
   SampleManager.group("projector-1", FileUtils.loadSounds(sketchPath()+"/data/projector-1/sounds"));
   SampleManager.group("projector-2", FileUtils.loadSounds(sketchPath()+"/data/projector-2/sounds"));
   SampleManager.group("projector-3", FileUtils.loadSounds(sketchPath()+"/data/projector-3/sounds"));
-  
+
   projector1 = new Timeline(Config.timeline1, new TimelineRenderer() {
     public void action() {
         int chance = getChance();
@@ -136,9 +138,22 @@ void draw() {
     println("");
   }
 
-  projector1.draw();
-  projector2.draw();
-  projector3.draw();
+  if (debugTripleheadScreens) {
+    noStroke();
+    fill(255, 0, 0);
+    rect(0, 0, projectorWidth, projectorHeight);
+
+    fill(0, 255, 0);
+    rect(projectorWidth, 0, projectorWidth, projectorHeight);
+
+    fill(0, 0, 255);
+    rect(projectorWidth*2, 0, projectorWidth, projectorHeight);
+
+  } else {
+    projector1.draw();
+    projector2.draw();
+    projector3.draw();
+  }
 
   checkWhetherToHideImages();
   checkWhetherToBlurImages();
