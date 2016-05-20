@@ -2,9 +2,10 @@ import beads.*;
 import org.jaudiolibs.beads.AudioServerIO;
 
 // ratio 600/800 = 0.75
-boolean fullScreen = true;
+boolean developmentMode = true; // false in the gallery!
+boolean fullScreen = !developmentMode;
 boolean debugTripleheadScreens = false;
-float scaler = 1; // needs to be set to 1 when using 800x600 projectors! Maybe, 1.5 or 2 when testing without external projectors
+float scaler = developmentMode ? 2.5 : 1; // needs to be set to 1 when using 800x600 projectors! Maybe, 1.5 or 2 when testing without external projectors
 int projectorWidth = 800/(int)scaler;
 int projectorHeight = 600/(int)scaler;
 int screenWidth = projectorWidth * 3;
@@ -13,7 +14,7 @@ int targetDisplay = 1; // triplehead is the only screen
 int alphaFade = 25;
 int alphaDuration = 60;
 boolean linkImageDurationToSample = true;
-boolean debugTimeline = false;
+boolean debugTimeline = developmentMode;
 
 int blurCounter = 0;
 
@@ -190,7 +191,7 @@ void setup() {
           noStroke();
           image(p3Image, this.xpos, this.ypos);
 
-          int channel = 2; // OUT 3
+          int channel = developmentMode ? 1 : 2; // OUT 3
           Gain g = new Gain(audioContext, 2, Config.globalGain);
           g.addInput(p3Player);
 
