@@ -287,6 +287,7 @@ int calculateClearDuration() {
 }
 
 void stopSampleFor(SamplePlayer player) {
+  audioContext.out.clearInputConnections();
   if (player != null) {
     player.setToEnd();
   }
