@@ -3,6 +3,7 @@ import org.jaudiolibs.beads.AudioServerIO;
 
 // ratio 600/800 = 0.75
 boolean fullScreen = true;
+boolean debugTripleheadScreens = false;
 float scaler = 1; // needs to be set to 1 when using 800x600 projectors! Maybe, 1.5 or 2 when testing without external projectors
 int projectorWidth = 800/(int)scaler;
 int projectorHeight = 600/(int)scaler;
@@ -12,10 +13,9 @@ int targetDisplay = 1; // triplehead is the only screen
 int alphaFade = 25;
 int alphaDuration = 60;
 boolean linkImageDurationToSample = true;
+boolean debugTimeline = false;
 
 int blurCounter = 0;
-
-boolean debugTripleheadScreens = true;
 
 ArrayList<PImage> images1 = new ArrayList<PImage>();
 ArrayList<PImage> images2 = new ArrayList<PImage>();
@@ -47,8 +47,6 @@ int buffer = 512;
 int bitDepth = 16;
 int inputs = 2;
 int outputs = 4;
-
-boolean debugTimeline = true;
 
 // PROCESSING
 void settings() {
@@ -86,23 +84,29 @@ void setup() {
 
           p1Image = images1.get((int)random(images1.size()));
           Sample sample = SampleManager.randomFromGroup("projector-1");
-          p1PlayerDuration = calculateDuration(sample);
           p1Player = new SamplePlayer(audioContext, sample);
 
           // tint(random(255), random(255), random(255), random(255));
           noStroke();
           image(p1Image, this.xpos, this.ypos);
 
+          int channel = 0; // OUT 1
           Gain g = new Gain(audioContext, 2, 0.2);
           g.addInput(p1Player);
-          audioContext.out.addInput(0, g, 0); // OUT 1
+
+          float reverbDuration = randomReverb(audioContext, g, channel);
+          int sampleDuration = calculateDuration(sample);
+          p1PlayerDuration = sampleDuration + (int) (reverbDuration * frameRate);
+          //println(reverbDuration+ " | "+sampleDuration+ " | "+p1PlayerDuration);
+
+          audioContext.out.addInput(channel, g, 0);
           audioContext.start();
         }
       }
 
     public void clear() {
-      print(projector1.keepImageForFramesCount+" | "); print(p1PlayerDuration+" | "); print(p1PlayerClearDuration);
-      println("");
+      //print(projector1.keepImageForFramesCount+" | "); print(p1PlayerDuration+" | "); print(p1PlayerClearDuration);
+      //println("");
 
       if (projector1.keepImageForFramesCount < p1PlayerDuration) {
         // keep visible
@@ -137,9 +141,15 @@ void setup() {
           noStroke();
           image(p2Image, this.xpos, this.ypos);
 
+          int channel = 1; // OUT 2
           Gain g = new Gain(audioContext, 2, 0.2);
           g.addInput(p2Player);
-          audioContext.out.addInput(1, g, 0); // OUT 2
+
+          float reverbDuration = randomReverb(audioContext, g, channel);
+          int sampleDuration = calculateDuration(sample);
+          p2PlayerDuration = sampleDuration + (int) (reverbDuration * frameRate);
+
+          audioContext.out.addInput(channel, g, 0);
           audioContext.start();
         }
       }
@@ -180,9 +190,15 @@ void setup() {
           noStroke();
           image(p3Image, this.xpos, this.ypos);
 
+          int channel = 2; // OUT 3
           Gain g = new Gain(audioContext, 2, 0.2);
           g.addInput(p3Player);
-          audioContext.out.addInput(2, g, 0); // OUT 3
+
+          float reverbDuration = randomReverb(audioContext, g, channel);
+          int sampleDuration = calculateDuration(sample);
+          p3PlayerDuration = sampleDuration + (int) (reverbDuration * frameRate);
+
+          audioContext.out.addInput(channel, g, 0);
           audioContext.start();
         }
       }
@@ -274,6 +290,25 @@ void stopSampleFor(SamplePlayer player) {
   if (player != null) {
     player.setToEnd();
   }
+}
+
+float randomReverb(AudioContext ac, Gain gain, int channel) {
+  float reverbDuration = 0.0;
+
+  if (getChance() > (100 - Config.reverbLikelihood)) {
+    Reverb reverb = new Reverb(audioContext, 1);
+    float maxReverbSeconds = 3.0;
+    float reverbSize = random(0.0, 1.0);
+    reverbDuration = map(reverbSize, 0.0, 1.0, 0.0, maxReverbSeconds);
+
+    reverb.setSize(reverbSize);
+    reverb.setDamping(random(0.3, 1.0));
+
+    reverb.addInput(gain);
+    audioContext.out.addInput(channel, reverb, 0);
+  }
+
+  return reverbDuration;
 }
 
 // INTERACTIONS

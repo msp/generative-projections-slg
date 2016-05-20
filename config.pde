@@ -9,6 +9,7 @@ static class Config {
   // probability
   static boolean enableProbability = true;
   static int likelihood = 75; // how likely is the event to fire? e.g. 75 is 75% of the time
+  static int reverbLikelihood = 50;
 
   // Image visible for
   static int keepImageForFrames = 100;
