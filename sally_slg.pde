@@ -91,7 +91,7 @@ void setup() {
           image(p1Image, this.xpos, this.ypos);
 
           int channel = 0; // OUT 1
-          Gain g = new Gain(audioContext, 2, 0.2);
+          Gain g = new Gain(audioContext, 2, Config.globalGain);
           g.addInput(p1Player);
 
           float reverbDuration = randomReverb(audioContext, g, channel);
@@ -142,7 +142,7 @@ void setup() {
           image(p2Image, this.xpos, this.ypos);
 
           int channel = 1; // OUT 2
-          Gain g = new Gain(audioContext, 2, 0.2);
+          Gain g = new Gain(audioContext, 2, Config.globalGain);
           g.addInput(p2Player);
 
           float reverbDuration = randomReverb(audioContext, g, channel);
@@ -191,7 +191,7 @@ void setup() {
           image(p3Image, this.xpos, this.ypos);
 
           int channel = 2; // OUT 3
-          Gain g = new Gain(audioContext, 2, 0.2);
+          Gain g = new Gain(audioContext, 2, Config.globalGain);
           g.addInput(p3Player);
 
           float reverbDuration = randomReverb(audioContext, g, channel);
