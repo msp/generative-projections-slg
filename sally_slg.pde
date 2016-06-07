@@ -2,14 +2,14 @@ import beads.*;
 import org.jaudiolibs.beads.AudioServerIO;
 
 // ratio 600/800 = 0.75
-boolean developmentMode = true; // false in the gallery!
+boolean developmentMode = false; // false in the gallery!
 boolean fullScreen = !developmentMode;
 boolean debugTripleheadScreens = false;
 float scaler = developmentMode ? 2.5 : 1; // needs to be set to 1 when using 800x600 projectors! Maybe, 1.5 or 2 when testing without external projectors
-int projectorWidth = 800/(int)scaler;
-int projectorHeight = 600/(int)scaler;
-int screenWidth = projectorWidth;
-int screenHeight = projectorHeight;
+int projectorWidth = 1024/(int)scaler;
+int projectorHeight = 768/(int)scaler;
+int screenWidth = (projectorWidth/2) - 50 ;
+int screenHeight = (projectorHeight/2) - 50;
 int targetDisplay = 1; // triplehead is the only screen
 int alphaFade = 25;
 int alphaDuration = 60;
@@ -48,12 +48,13 @@ void setup() {
   background(0);
 
   audioFormat = new IOAudioFormat(sampleRate, bitDepth, inputs, outputs);
-  audioContext = new AudioContext(new AudioServerIO.Jack(), buffer, audioFormat);
+  //audioContext = new AudioContext(new AudioServerIO.Jack(), buffer, audioFormat);
+  audioContext = new AudioContext(buffer);
 
   FileUtils.loadImagesInto(images1, sketchPath()+"/data/projector-1/images", this, screenWidth, screenHeight);
   SampleManager.group("projector-1", FileUtils.loadSounds(sketchPath()+"/data/projector-1/sounds"));
 
-  projector1 = new Timeline(Config.timeline1, new TimelineRenderer(0, 0) {
+  projector1 = new Timeline(Config.timeline1, new TimelineRenderer(300, 320) {
     public void action() {
         int chance = getChance();
 
@@ -82,7 +83,7 @@ void setup() {
           p1PlayerDuration = sampleDuration + (int) (reverbDuration * frameRate);
           //println(reverbDuration+ " | "+sampleDuration+ " | "+p1PlayerDuration);
 
-          audioContext.out.addInput(channel, g, 0);
+          audioContext.out.addInput(g);
           audioContext.start();
         }
       }
@@ -106,6 +107,7 @@ void setup() {
 }
 
 void draw() {
+  noCursor();
   if (debugTimeline) {
     print((int)frameRate+"\t"); print(projector1);
     print("\t\t"+blurCounter+"\t >"+Config.blurFromFrame+"<"+Config.blurUntilFrame);
@@ -182,7 +184,7 @@ float randomReverb(AudioContext ac, Gain gain, int channel) {
     reverb.setDamping(random(0.3, 1.0));
 
     reverb.addInput(gain);
-    audioContext.out.addInput(channel, reverb, 0);
+    audioContext.out.addInput(reverb);
   }
 
   return reverbDuration;
